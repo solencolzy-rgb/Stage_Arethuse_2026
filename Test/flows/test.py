@@ -9,14 +9,8 @@
 # Alternatively, ask for help at https://github.com/deeplime-io/onecode/issues
 
 import onecode
-
+from onecode import Logger, text_input
 
 def run():
-    onecode.Logger.info(
-        """
-        #####################################################################
-        ###> Hello from Test!
-        ###> Fill in this run() function with something awesome!
-        #####################################################################
-        """
-    )
+    onecode.Logger.info( f"Hello {text_input('your name', 'OneCoder')}!")
+    
