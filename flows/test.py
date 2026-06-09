@@ -73,7 +73,7 @@ def run():
 
     chosen_combinations = dropdown(
         key="Combinaisons",
-        value=None,
+        value=["Natural Color (4-3-2)"],
         label="Choisissez les combinaisons de bandes",
         options=[
             "Natural Color (4-3-2)",
@@ -86,7 +86,7 @@ def run():
 
     chosen_ratios = dropdown(
         key="Ratios",
-        value=None,
+        value=["Ferric oxydes 4/2"],
         label="Choisissez les indices de ratios",
         options=[
             "Ferric oxydes 4/2",
@@ -103,7 +103,7 @@ def run():
 
     chosen_complexes = dropdown(
         key="Calculs algebriques",
-        value=None,
+        value=["Ferric Iron 4/2x(4+6)/5"],
         label="Choisissez les calculs algebriques de bandes",
         options=[
             "Ferric Iron 4/2x(4+6)/5",
