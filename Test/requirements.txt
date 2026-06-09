@@ -9,6 +9,6 @@ numpy
 scipy
 threadpoolctl 
 matplotlib
-
+scikit-learn
 
 
