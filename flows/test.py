@@ -50,7 +50,7 @@ BAND_COMPLEXES = {
 def run():
     onecode.Logger.info(f"Hello {text_input('your name', 'OneCoder')}!")
 
-    base_path = text_input(
+    base_path = file_input(
         key="InputFolder",
         value="/path/to/landsat",
         label="Dossier bandes Landsat 8",
