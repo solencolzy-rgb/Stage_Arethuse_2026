@@ -97,7 +97,8 @@ def run():
         multi=True,
     )
 
-    traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
+    if Project().mode == Mode.EXECUTE:
+        traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
 
 
 def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
