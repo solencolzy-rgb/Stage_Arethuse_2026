@@ -73,7 +73,7 @@ def run():
 
     chosen_combinations = dropdown(
         key="Combinaisons",
-        value=[],
+        value=None,
         label="Choisissez les combinaisons de bandes",
         options=[
             "Natural Color (4-3-2)",
@@ -86,7 +86,7 @@ def run():
 
     chosen_ratios = dropdown(
         key="Ratios",
-        value=[],
+        value=None,
         label="Choisissez les indices de ratios",
         options=[
             "Ferric oxydes 4/2",
@@ -103,7 +103,7 @@ def run():
 
     chosen_complexes = dropdown(
         key="Calculs algebriques",
-        value=[],
+        value=None,
         label="Choisissez les calculs algebriques de bandes",
         options=[
             "Ferric Iron 4/2x(4+6)/5",
@@ -119,7 +119,12 @@ def run():
     )
 
     if Project().mode == Mode.EXECUTE:
-        traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
+        traitement_image(
+            base_path, prefix, suffix,
+            chosen_combinations or [],
+            chosen_ratios or [],
+            chosen_complexes or [],
+        )
 
 
 def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
