@@ -12,7 +12,7 @@ import os
 import onecode
 import numpy as np
 import rasterio
-from onecode import Logger, Mode, Project, dropdown, text_input, file_output
+from onecode import Logger, Mode, Project, dropdown, text_input, file_output, file_input
 from rasterio.enums import Resampling
 from sklearn.decomposition import PCA
 
@@ -50,10 +50,10 @@ BAND_COMPLEXES = {
 def run():
     onecode.Logger.info(f"Hello {text_input('your name', 'OneCoder')}!")
 
-    base_path = text_input(
+    base_path = file_input(
         key="InputFolder",
         value="/path/to/landsat",
-        label="Dossier bandes Landsat",
+        label="Dossier bandes Landsat 8",
         optional=False,
     )
 
