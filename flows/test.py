@@ -9,6 +9,7 @@
 # Alternatively, ask for help at https://github.com/deeplime-io/onecode/issues
 
 import os
+import zipfile
 import onecode
 import numpy as np
 import rasterio
@@ -50,7 +51,7 @@ BAND_COMPLEXES = {
 def run():
     onecode.Logger.info(f"Hello {text_input('your name', 'OneCoder')}!")
 
-    base_path = file_input(
+    zip_path = file_input(
         key="InputFolder",
         value="/path/to/landsat",
         label="Dossier bandes Landsat 8",
@@ -118,6 +119,22 @@ def run():
         multiple=True,
     )
 
+    if zip_path and os.path.exists(zip_path):
+        base_path = os.path.join(os.path.dirname(zip_path), "unzipped_bands")
+        os.makedirs(base_path, exist_ok=True)
+
+        Logger.info(f"Extraction de l'archive {os.path.basename(zip_path)}...")
+        try:
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(base_path)
+            Logger.info("Extraction terminée avec succès.")
+        except Exception as e:
+            Logger.error(f"❌ Erreur lors du dézippage: {str(e)}.")
+            return
+    else: 
+        Logger.error("❌ Fichier zip introuvable, vérifiez le chemin d'accès.")
+        return 
+
     traitement_image(
             base_path, prefix, suffix,
             chosen_combinations or [],
@@ -134,6 +151,13 @@ def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
 
     for i in band_range:
         file_path = os.path.join(base_path, f"{prefix}_B{i}_{suffix}.tif")
+
+        #if not os.path.exists(file_path):
+        #    for root, dirs, files in os.walk(base_path):
+        #        if file_name in files:
+        #            file_path = os.path.join(root, file_name)
+        #            break
+
         if os.path.exists(file_path):
             with rasterio.open(file_path) as src:
                 band_data = src.read(1, resampling=Resampling.nearest).astype(np.float32)
