@@ -53,21 +53,21 @@ def run():
 
     base_path = file_input(
         key="InputFolder",
-        value="/path/to/landsat",
+        value=None,
         label="Dossier bandes Landsat",
         optional=False,
     )
 
     prefix = text_input(
         key="Prefix",
-        value="prefix",
+        value=None,
         label="Prefixe des fichiers",
         optional=False,
     )
 
     suffix = text_input(
         key="Suffix",
-        value="suffix",
+        value=None,
         label="Suffixe des fichiers",
         optional=False,
     )
@@ -97,8 +97,8 @@ def run():
         multi=True,
     )
 
-    if Project().mode == Mode.EXECUTE:
-        traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
+    
+    traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
 
 
 def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
