@@ -1,0 +1,10 @@
+onecode>=1,<2
+rasterio
+numpy
+pandas
+joblib
+narwhals
+scipy
+threadpoolctl
+matplotlib
+scikit-learn
