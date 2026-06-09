@@ -188,7 +188,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
 
     # --- Calculs algébriques de bandes ---
     if liste_complexes:
-        profile_complexes = profile_copy()
+        profile_complexes = profile.copy()
         profile_ratio.update(count=1, dtype=rasterio.float32, nodata=np.nan)
 
         for name in liste_complexes:
