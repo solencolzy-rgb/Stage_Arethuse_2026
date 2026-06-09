@@ -118,8 +118,7 @@ def run():
         multiple=True,
     )
 
-    if Project().mode == Mode.EXECUTE:
-        traitement_image(
+    traitement_image(
             base_path, prefix, suffix,
             chosen_combinations or [],
             chosen_ratios or [],
