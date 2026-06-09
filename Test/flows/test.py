@@ -36,6 +36,17 @@ BAND_RATIOS = {
     "Clay minerals 6/7":              (6, 7),
 }
 
+BAND_COMPLEXES = {     
+    'Ferric Iron 4/2x(4+6)/5':                    (2, 4, 6, 5, 'np.where((bands[5] != 0) & (bands[2] != 0), (bands[4]/bands[2])*(bands[4]+bands[6])/bands[5], np.nan)'),
+    'Ferrous Iron (3+6)/(4+5)':             (3, 6, 4, 5, 'np.where((bands[4]+bands[5]) != 0, (bands[3]+bands[6])/(bands[4]+bands[5]), np.nan)'),
+    'Iron Sulfate 2/1-5/4':             (2, 1, 5, 4, 'np.where((bands[4] != 0) & (bands[1] != 0), (bands[2]/bands[1])-(bands[5]/bands[4]), np.nan)'),
+    'Clay Sulfate Mica Marble 6/7-5/4': (6, 7, 5, 4, 'np.where((bands[7] != 0) & (bands[4] != 0), (bands[6]/bands[7])-(bands[5]/bands[4]), np.nan)'),
+    'Hydrated Minerals (5-6)/(6+5)':        (5, 6, 6, 5, 'np.where((bands[6]+bands[5]) != 0, (bands[5]-bands[6])/(bands[6]+bands[5]), np.nan)'),
+    'Clay Alteration Minerals (6-7)/(6+7)': (6, 7, 6, 7, 'np.where((bands[6]+bands[7]) != 0, (bands[6]-bands[7])/(bands[6]+bands[7]), np.nan)'),
+    'Litho Discrimination (6-2)/(6+2)':     (6, 2, 6, 2, 'np.where((bands[6]+bands[2]) != 0, (bands[6]-bands[2])/(bands[6]+bands[2]), np.nan)'),
+    'Alteration Minerals (6-5)/(6+5)':      (6, 5, 6, 5, 'np.where((bands[6]+bands[5]) != 0, (bands[6]-bands[5])/(bands[6]+bands[5]), np.nan)')
+}
+
 
 def run():
     onecode.Logger.info(f"Hello {text_input('your name', 'OneCoder')}!")
@@ -79,7 +90,15 @@ def run():
         multi=True,
     )
 
-    traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios)
+    chosen_complexes = dropdown(
+        key="Calculs linéaires",
+        value=[],
+        label="Choisissez les calculs linéaires de bandes",
+        options=list(BAND_COMPLEXES.keys()),
+        multi=True,
+    )
+
+    traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
 
 
 def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
@@ -112,7 +131,7 @@ def _normalize(image, per_band=True):
     return normalized.astype(np.uint16)
 
 
-def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios):
+def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios, liste_complexes):
     Logger.info("Processing image...")
 
     bands, profile = _load_bands(base_path, prefix, suffix)
@@ -152,6 +171,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
             if num in bands and den in bands:
                 with np.errstate(divide="ignore", invalid="ignore"):
                     ratio = np.where(bands[den] != 0, bands[num] / bands[den], np.nan)
+                    ratio = _normalize(ratio[np.newaxis, ...])[0]  # Normalisation et suppression de la dimension inutile
                 output_file = file_output(
                         key=f"Output_{name}",
                         value=f"{prefix}_{suffix}_{name}.tif",  # relatif au dossier outputs/ automatiquement
@@ -163,5 +183,28 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 Logger.info(f"✅ Ratio {name} généré")
             else:
                 Logger.warning(f"❌ Bande manquante pour le ratio {name}")
+    
+    # --- PCA ---
+
+    # --- Calculs algébriques de bandes ---
+    if liste_complexes:
+        profile_complexes = profile_copy()
+        profile_ratio.update(count=1, dtype=rasterio.float32, nodata=np.nan)
+
+        for name in liste_complexes:
+            b1, b2, b3, b4, formula = BAND_COMPLEXES[name]
+            if all(b in bands for b in [b1, b2, b3, b4]):
+                complexe = eval(formula)
+                complexe = _normalize(complexe[np.newaxis, ...])[0]  # Normalisation et suppression de la dimension inutile
+                output_file = file_output(
+                        key=f"Output_{name}",
+                        value=f"{prefix}_{suffix}_{name}.tif",  # relatif au dossier outputs/ automatiquement
+                        label=f"Calcul algébrique {name}",
+                        make_path=True,                # crée le dossier si il n'existe pas
+                        )
+                with rasterio.open(output_file, "w", **profile_complexes) as dst:
+                    dst.write(complexe.astype(np.float32), 1)
+                Logger.info(f"✅ Calcul algébrique de bandes {name} généré")
+            return 
 
     Logger.info("🎉 Traitement terminé !")
