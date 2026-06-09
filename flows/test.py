@@ -203,7 +203,7 @@ def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
                 profile = src.profile
         else:
             Logger.warning(f"⚠️ Impossible de trouver un fichier pour la Bande {i} dans l'archive.")
-#
+
     return bands, profile
 
 
