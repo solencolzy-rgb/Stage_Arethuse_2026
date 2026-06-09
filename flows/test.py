@@ -52,8 +52,8 @@ def run():
     onecode.Logger.info(f"Hello {text_input('your name', 'OneCoder')}!")
 
     zip_path = file_input(
-        key="InputFolder",
-        value="/path/to/landsat",
+        key="InputFolderZip",
+        value="/path/to/landsat.zip",
         label="Dossier bandes Landsat 8",
         optional=False,
     )
@@ -151,12 +151,13 @@ def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
 
     for i in band_range:
         file_path = os.path.join(base_path, f"{prefix}_B{i}_{suffix}.tif")
+        file_name = f"{prefix}_B{i}_{suffix}.tif"
 
-        #if not os.path.exists(file_path):
-        #    for root, dirs, files in os.walk(base_path):
-        #        if file_name in files:
-        #            file_path = os.path.join(root, file_name)
-        #            break
+        if not os.path.exists(file_path):
+            for root, dirs, files in os.walk(base_path):
+                if file_name in files:
+                    file_path = os.path.join(root, file_name)
+                    break
 
         if os.path.exists(file_path):
             with rasterio.open(file_path) as src:
