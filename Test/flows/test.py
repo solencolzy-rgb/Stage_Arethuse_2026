@@ -90,9 +90,9 @@ def run():
     )
 
     chosen_complexes = dropdown(
-        key="Calculs linéaires",
+        key="Calculs lineaires",
         value=[],
-        label="Choisissez les calculs linéaires de bandes",
+        label="Choisissez les calculs lineaires de bandes",
         options=list(BAND_COMPLEXES.keys()),
         multi=True,
     )
