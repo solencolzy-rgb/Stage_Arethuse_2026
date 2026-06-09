@@ -50,7 +50,6 @@ BAND_COMPLEXES = {
 
 def run():
     onecode.Logger.info(f"Hello {text_input('your name', 'OneCoder')}!")
-    Project().mode = Mode.EXECUTE
 
     base_path = file_input(
         key="InputFolder",
@@ -97,6 +96,8 @@ def run():
         options=list(BAND_COMPLEXES.keys()),
         multi=True,
     )
+
+    Project().mode = Mode.EXECUTE
 
     traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
 
