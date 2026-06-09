@@ -53,21 +53,21 @@ def run():
 
     base_path = file_input(
         key="InputFolder",
-        value= None,
+        value="/path/to/landsat",
         label="Dossier bandes Landsat",
-        optional= False,
+        optional=False,
     )
 
     prefix = text_input(
         key="Prefix",
-        value=None,
-        label="Préfixe des fichiers",
+        value="prefix",
+        label="Prefixe des fichiers",
         optional=False,
     )
 
     suffix = text_input(
         key="Suffix",
-        value=None,
+        value="suffix",
         label="Suffixe des fichiers",
         optional=False,
     )
