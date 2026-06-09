@@ -144,30 +144,66 @@ def run():
 
 
 def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
-    """Charge les bandes Landsat depuis le dossier."""
+    #"""Charge les bandes Landsat depuis le dossier."""
+    #bands = {}
+    #profile = None
+    #nodata_value = -9999.0
+#
+    #for i in band_range:
+    #    file_path = os.path.join(base_path, f"{prefix}_B{i}_{suffix}.tif")
+    #    file_name = f"{prefix}_B{i}_{suffix}.tif"
+#
+    #    if not os.path.exists(file_path):
+    #        for root, dirs, files in os.walk(base_path):
+    #            if file_name in files:
+    #                file_path = os.path.join(root, file_name)
+    #                break
+#
+    #    if os.path.exists(file_path):
+    #        with rasterio.open(file_path) as src:
+    #            band_data = src.read(1, resampling=Resampling.nearest).astype(np.float32)
+    #            band_data[band_data == nodata_value] = np.nan
+    #            bands[i] = band_data
+    #            profile = src.profile
+    #    else:
+    #        Logger.warning(f"⚠️ Fichier manquant : {file_path}")
+    
+    """Charge automatiquement les bandes Landsat en détectant le motif _Bi_."""
     bands = {}
     profile = None
     nodata_value = -9999.0
 
+    # 1. On liste absolument tous les fichiers extraits (et dans les sous-dossiers)
+    all_files = []
+    for root, _, files in os.walk(base_path):
+        for f in files:
+            if f.lower().endswith(('.tif', '.tiff')):
+                all_files.append(os.path.join(root, f))
+
+    Logger.info(f"🔍 {len(all_files)} fichiers rasters détectés dans l'archive.")
+
+    # 2. Pour chaque numéro de bande requis, on cherche le fichier qui contient le tag "_Bi_" ou "_Bi."
     for i in band_range:
-        file_path = os.path.join(base_path, f"{prefix}_B{i}_{suffix}.tif")
-        file_name = f"{prefix}_B{i}_{suffix}.tif"
+        file_path = None
+        target_pattern = f"_B{i}_"
+        target_pattern_end = f"_B{i}." # Au cas où la bande finit le nom (ex: image_B1.tif)
 
-        if not os.path.exists(file_path):
-            for root, dirs, files in os.walk(base_path):
-                if file_name in files:
-                    file_path = os.path.join(root, file_name)
-                    break
+        for path in all_files:
+            filename = os.path.basename(path)
+            if target_pattern in filename or target_pattern_end in filename:
+                file_path = path
+                break
 
-        if os.path.exists(file_path):
+        if file_path and os.path.exists(file_path):
+            Logger.info(f"📖 Chargement réussi pour la Bande {i} : {os.path.basename(file_path)}")
             with rasterio.open(file_path) as src:
                 band_data = src.read(1, resampling=Resampling.nearest).astype(np.float32)
                 band_data[band_data == nodata_value] = np.nan
                 bands[i] = band_data
                 profile = src.profile
         else:
-            Logger.warning(f"⚠️ Fichier manquant : {file_path}")
-
+            Logger.warning(f"⚠️ Impossible de trouver un fichier pour la Bande {i} dans l'archive.")
+#
     return bands, profile
 
 
