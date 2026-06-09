@@ -54,7 +54,7 @@ def run():
     base_path = file_input(
         key="InputFolder",
         value= None,
-        label="Dossier Landsat",
+        label="Dossier bandes Landsat",
         optional= False,
     )
 
@@ -96,8 +96,6 @@ def run():
         options=list(BAND_COMPLEXES.keys()),
         multi=True,
     )
-
-    Project().mode = Mode.EXECUTE
 
     traitement_image(base_path, prefix, suffix, chosen_combinations, chosen_ratios, chosen_complexes)
 
