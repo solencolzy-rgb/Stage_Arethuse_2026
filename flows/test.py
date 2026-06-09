@@ -81,7 +81,7 @@ def run():
             "Geological structure (7-5-3)",
             "Geological structure bis (3-4-7)",
         ],
-        multi=True,
+        multiple=True,
     )
 
     chosen_ratios = dropdown(
@@ -98,7 +98,7 @@ def run():
             "Green vegetation 5/4",
             "Clay minerals 6/7",
         ],
-        multi=True,
+        multiple=True,
     )
 
     chosen_complexes = dropdown(
@@ -115,7 +115,7 @@ def run():
             "Litho Discrimination (6-2)/(6+2)",
             "Alteration Minerals (6-5)/(6+5)",
         ],
-        multi=True,
+        multiple=True,
     )
 
     if Project().mode == Mode.EXECUTE:
