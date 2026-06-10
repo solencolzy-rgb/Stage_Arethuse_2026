@@ -99,34 +99,34 @@ def run():
 
     chosen_ratios = dropdown(
         key="Ratios",
-        value=["Ferric oxydes 4/2"],
+        value=["Ferric oxydes 4|2"],
         label="Choisissez les indices de ratios",
         options=[
-            "Ferric oxydes 4/2",
-            "Clays, hydroxyles minerals 6/5",
-            "Clays, hydroxyles minerals 7/5",
-            "Iron oxydes 4/3",
-            "Silice 3/1",
-            "Carbonates 6/3",
-            "Green vegetation 5/4",
-            "Clay minerals 6/7",
+            "Ferric oxydes 4|2",
+            "Clays, hydroxyles minerals 6|5",
+            "Clays, hydroxyles minerals 7|5",
+            "Iron oxydes 4|3",
+            "Silice 3|1",
+            "Carbonates 6|3",
+            "Green vegetation 5|4",
+            "Clay minerals 6|7",
         ],
         multiple=True,
     )
 
     chosen_complexes = dropdown(
         key="Calculs algebriques",
-        value=["Ferric Iron 4/2x(4+6)/5"],
+        value=["Ferric Iron 4|2x(4+6)|5"],
         label="Choisissez les calculs algebriques de bandes",
         options=[
-            "Ferric Iron 4/2x(4+6)/5",
-            "Ferrous Iron (3+6)/(4+5)",
-            "Iron Sulfate 2/1-5/4",
-            "Clay Sulfate Mica Marble 6/7-5/4",
-            "Hydrated Minerals (5-6)/(6+5)",
-            "Clay Alteration Minerals (6-7)/(6+7)",
-            "Litho Discrimination (6-2)/(6+2)",
-            "Alteration Minerals (6-5)/(6+5)",
+            "Ferric Iron 4|2x(4+6)|5",
+            "Ferrous Iron (3+6)|(4+5)",
+            "Iron Sulfate 2|1-5|4",
+            "Clay Sulfate Mica Marble 6|7-5|4",
+            "Hydrated Minerals (5-6)|(6+5)",
+            "Clay Alteration Minerals (6-7)|(6+7)",
+            "Litho Discrimination (6-2)|(6+2)",
+            "Alteration Minerals (6-5)|(6+5)",
         ],
         multiple=True,
     )
@@ -380,7 +380,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         
         output_file = file_output(
             key=f"Output_ACP", 
-            value=f"{prefix}_{suffix}_ACP_CP{rgb_mapping[0]}CP{rgb_mapping[1]}CP{rgb_mapping[2]}.tif",
+            value=f"{prefix}_{suffix}_ACP_CP{rgb_mapping[0]+1}CP{rgb_mapping[1]+1}CP{rgb_mapping[2]+1}.tif",
             label=f"Composantes principales",
             make_path=True,
         )
