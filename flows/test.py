@@ -9,6 +9,7 @@
 # Alternatively, ask for help at https://github.com/deeplime-io/onecode/issues
 
 import os
+import re
 import zipfile
 import onecode
 import numpy as np
@@ -46,6 +47,17 @@ BAND_COMPLEXES = {
     "Litho Discrimination (6-2)/(6+2)":    (6, 2, 6, 2, "np.where((bands[6]+bands[2]) != 0, (bands[6]-bands[2])/(bands[6]+bands[2]), np.nan)"),
     "Alteration Minerals (6-5)/(6+5)":     (6, 5, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[6]-bands[5])/(bands[6]+bands[5]), np.nan)"),
 }
+
+BAND_ACP = { 
+    "CP1": 1,
+    "CP2": 2,
+    "CP3": 3,
+    "CP4": 4,
+    "CP5": 5,
+    "CP6": 6,
+}
+
+
 
 
 def run():
@@ -119,6 +131,21 @@ def run():
         multiple=True,
     )
 
+    acp_choice = dropdown(
+        key="PCA",
+        value = ["CP1", "CP2", "CP3"],
+        label="Choisissez les composantes principales à visualiser (3 max)",
+        options = ["CP1", "CP2", "CP3","CP4", "CP5", "CP6"],
+        multiple=True,
+    )       
+
+    acp_combination = text_input(
+        key = "RGB PCA combination",
+        value = "R=CP3, G=CP1, B=CP2",
+        label = "Choisissez la combinaison RGB pour représenter les composantes principales",
+        optional = False,
+    )
+
     if zip_path and os.path.exists(zip_path):
         base_path = os.path.join(os.path.dirname(zip_path), "unzipped_bands")
         os.makedirs(base_path, exist_ok=True)
@@ -140,6 +167,8 @@ def run():
             chosen_combinations or [],
             chosen_ratios or [],
             chosen_complexes or [],
+            acp_choice or [],
+            acp_combination or [],
         )
 
 
@@ -217,7 +246,7 @@ def _normalize(image):
     return normalized.astype(np.uint16)
 
 
-def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios, liste_complexes):
+def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios, liste_complexes, acp_choice, acp_combination):
     Logger.info("Processing image...")
 
     bands, profile = _load_bands(base_path, prefix, suffix)
@@ -292,5 +321,76 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 Logger.info(f"✅ Calcul algébrique {name} généré")
             else:
                 Logger.warning(f"❌ Bande manquante pour {name}")
+
+    # --- Calcul l'ACP des bandes ---
+
+    if acp_choice:
+
+        # --- On enlève la bande 1 de Landsat 8 (bruits atmosphériques) ---
+        if 1 in sorted(bands.keys()):
+            bands_for_acp  = sorted(bands.keys()).remove(1)
+        else:
+            bands_for_acp = sorted(bands.keys())
+        Logger.info(f"Bandes utilisées pour l'ACP : {bands_for_acp}")
+
+        # --- Empilement en matrice (pixels x bandes) ---
+        stack = np.array([bands[i] for i in bands_for_acp])
+        n_bands, rows, cols = stack.shape
+        X = stack.reshape(n_bands, -1).T
+
+        # --- Masque :  pixels sans NaN dans toutes les bandes ---
+        valid_mask = ~np.isnan(X).any(axis=1)
+        X_valid = X[valid_mask]
+
+        # --- ACP (échantillonage pour accélerer le calcul) ---
+        n_samples = min(500000, X_valid.shape[0])                    # 500 000 échantillons max
+        sample_indices = np.random.choice(X_valid.shape[0], size=n_samples, replace=False)
+        pca = PCA()
+        pca.fit(X_valid[sample_indices])
+        Logger.info(f"Variance contenue par les composantes principales : {pca.explained_variance_ratio_()}")
+
+        X_pca = pca.transform(X_valid)                              # (n_valid_pixels, n_components)
+
+        # --- Reconstruction des images CP en 2D ---
+
+        list_idx = [BAND_ACP[name] for name in acp_choice]
+
+        pc_images = []
+        for pc_idx in list_idx:
+            pc_img = np.full(rows * cols, np.nan, dtype=np.float32)
+            pc_img[valid_mask] = X_pca[:, pc_idx - 1]
+            pc_images.append(pc_img.reshape(rows,cols))
+        
+        # --- Normalisation et assignation RGB ---
+        rgb_pca = np.zeros((3, rows, cols), dtype=np.uint16)
+
+        # --- Traduction de la demande de l'utilisateur en une liste de chiffres directement utilisables --- 
+        numeros_pc = [int(x) for x in re.findall(r"\d+", acp_combination)]  # traduction de la demande de l'utilisateur en une liste de chiffres directement utilisables
+        rgb_mapping = [num -1 for num in numeros_pc]
+
+        for pos_pc, pc_idx in enumerate(rgb_mapping):
+            pc_image = pc_images[pc_idx]
+            vmin, vmax = np.nanpercentile(pc_image, 2), np.nanpercentile(pc_image, 98)
+
+            if vmax - vmin == 0 : 
+                rgb_pca[pos_pc] = 0
+            else:
+                rgb_pca[pos_pc] = np.clip((pc_image - vmin) / (vmax - vmin) * 65535, 0, 65535).astype(np.uint16)
+        
+        profile_pca = profile.copy()
+        profile_pca.update(count=3, dtype=rasterio.uint16, nodata=0)
+        
+        output_file = file_output(
+            key=f"Output_ACP", 
+            value=f"{prefix}_{suffix}_ACP_CP{rgb_mapping[0]}CP{rgb_mapping[1]}CP{rgb_mapping[2]}.tif",
+            label=f"Composantes principales",
+            make_path=True,
+        )
+        with rasterio.open(output_file, "w", **profile_pca) as dst:
+            dst.write(rgb_pca)
+        
+        Logger.info(f"✅ Composantes principales générées")
+
+
 
     Logger.info("🎉 Traitement terminé !")
