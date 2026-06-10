@@ -360,9 +360,6 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
             pc_img[valid_mask] = X_pca[:, pc_idx - 1]
             pc_images[pc_idx] = pc_img.reshape(rows, cols)
         
-        Logger.info(f"Nombre d'éléments dans pc_images : {len(pc_images)}")
-        Logger.info(pc_images)
-        
         # --- Normalisation et assignation RGB ---
         rgb_pca = np.zeros((3, rows, cols), dtype=np.uint16)
 
