@@ -249,7 +249,7 @@ def _normalize(image):
 def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios, liste_complexes, acp_choice, acp_combination):
     Logger.info("Processing image...")
 
-    bands, profile = _load_bands(base_path, prefix, suffix)
+    bands, profile = _load_bands(base_path)
 
     if not bands:
         Logger.error("❌ Aucune bande chargée, vérifiez le dossier, le préfixe et le suffixe.")
