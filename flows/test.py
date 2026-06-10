@@ -27,25 +27,25 @@ BAND_COMBINATIONS = {
 }
 
 BAND_RATIOS = {
-    "Ferric oxydes 4/2":              (4, 2),
-    "Clays, hydroxyles minerals 6/5": (6, 5),
-    "Clays, hydroxyles minerals 7/5": (7, 5),
-    "Iron oxydes 4/3":                (4, 3),
-    "Silice 3/1":                     (3, 1),
-    "Carbonates 6/3":                 (6, 3),
-    "Green vegetation 5/4":           (5, 4),
-    "Clay minerals 6/7":              (6, 7),
+    "Ferric oxydes 4|2":              (4, 2),
+    "Clays, hydroxyles minerals 6|5": (6, 5),
+    "Clays, hydroxyles minerals 7|5": (7, 5),
+    "Iron oxydes 4|3":                (4, 3),
+    "Silice 3|1":                     (3, 1),
+    "Carbonates 6|3":                 (6, 3),
+    "Green vegetation 5|4":           (5, 4),
+    "Clay minerals 6|7":              (6, 7),
 }
 
 BAND_COMPLEXES = {
-    "Ferric Iron 4/2x(4+6)/5":             (2, 4, 6, 5, "np.where((bands[5] != 0) & (bands[2] != 0), (bands[4]/bands[2])*(bands[4]+bands[6])/bands[5], np.nan)"),
-    "Ferrous Iron (3+6)/(4+5)":            (3, 6, 4, 5, "np.where((bands[4]+bands[5]) != 0, (bands[3]+bands[6])/(bands[4]+bands[5]), np.nan)"),
-    "Iron Sulfate 2/1-5/4":                (2, 1, 5, 4, "np.where((bands[4] != 0) & (bands[1] != 0), (bands[2]/bands[1])-(bands[5]/bands[4]), np.nan)"),
-    "Clay Sulfate Mica Marble 6/7-5/4":    (6, 7, 5, 4, "np.where((bands[7] != 0) & (bands[4] != 0), (bands[6]/bands[7])-(bands[5]/bands[4]), np.nan)"),
-    "Hydrated Minerals (5-6)/(6+5)":       (5, 6, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[5]-bands[6])/(bands[6]+bands[5]), np.nan)"),
-    "Clay Alteration Minerals (6-7)/(6+7)":(6, 7, 6, 7, "np.where((bands[6]+bands[7]) != 0, (bands[6]-bands[7])/(bands[6]+bands[7]), np.nan)"),
-    "Litho Discrimination (6-2)/(6+2)":    (6, 2, 6, 2, "np.where((bands[6]+bands[2]) != 0, (bands[6]-bands[2])/(bands[6]+bands[2]), np.nan)"),
-    "Alteration Minerals (6-5)/(6+5)":     (6, 5, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[6]-bands[5])/(bands[6]+bands[5]), np.nan)"),
+    "Ferric Iron 4|2x(4+6)|5":             (2, 4, 6, 5, "np.where((bands[5] != 0) & (bands[2] != 0), (bands[4]/bands[2])*(bands[4]+bands[6])/bands[5], np.nan)"),
+    "Ferrous Iron (3+6)|(4+5)":            (3, 6, 4, 5, "np.where((bands[4]+bands[5]) != 0, (bands[3]+bands[6])/(bands[4]+bands[5]), np.nan)"),
+    "Iron Sulfate 2|1-5|4":                (2, 1, 5, 4, "np.where((bands[4] != 0) & (bands[1] != 0), (bands[2]/bands[1])-(bands[5]/bands[4]), np.nan)"),
+    "Clay Sulfate Mica Marble 6|7-5|4":    (6, 7, 5, 4, "np.where((bands[7] != 0) & (bands[4] != 0), (bands[6]/bands[7])-(bands[5]/bands[4]), np.nan)"),
+    "Hydrated Minerals (5-6)|(6+5)":       (5, 6, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[5]-bands[6])/(bands[6]+bands[5]), np.nan)"),
+    "Clay Alteration Minerals (6-7)|(6+7)":(6, 7, 6, 7, "np.where((bands[6]+bands[7]) != 0, (bands[6]-bands[7])/(bands[6]+bands[7]), np.nan)"),
+    "Litho Discrimination (6-2)|(6+2)":    (6, 2, 6, 2, "np.where((bands[6]+bands[2]) != 0, (bands[6]-bands[2])/(bands[6]+bands[2]), np.nan)"),
+    "Alteration Minerals (6-5)|(6+5)":     (6, 5, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[6]-bands[5])/(bands[6]+bands[5]), np.nan)"),
 }
 
 BAND_ACP = { 
@@ -172,7 +172,7 @@ def run():
         )
 
 
-def _load_bands(base_path, prefix, suffix, band_range=range(1, 8)):
+def _load_bands(base_path, band_range=range(1, 8)):
     #"""Charge les bandes Landsat depuis le dossier."""
     #bands = {}
     #profile = None
