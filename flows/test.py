@@ -372,14 +372,14 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
 
         for pos_pc, pc_num in enumerate(rgb_mapping):
 
-            if pc_num not in pc_images:
+            if pc_num + 1 not in pc_images:
                     Logger.error(
-                    f"CP{pc_num} demandée mais non calculée. "
+                    f"CP{pc_num + 1} demandée mais non calculée. "
                     f"ACP disponibles : {list(pc_images.keys())}"
         )
                     return
 
-            pc_image = pc_images[pc_num]
+            pc_image = pc_images[pc_num + 1]
             vmin, vmax = np.nanpercentile(pc_image, 2), np.nanpercentile(pc_image, 98)
 
             if vmax - vmin == 0 : 
