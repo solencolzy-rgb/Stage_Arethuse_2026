@@ -327,14 +327,12 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
     if acp_choice:
 
         # --- On enlève la bande 1 de Landsat 8 (bruits atmosphériques) ---
-        if 1 in sorted(bands.keys()):
-            bands_for_acp  = sorted(bands.keys()).remove(1)
-        else:
-            bands_for_acp = sorted(bands.keys())
-        Logger.info(f"Bandes utilisées pour l'ACP : {bands_for_acp}")
+      
+        bands_for_pca = [b for b in sorted(bands.keys()) if b != 1]
+        Logger.info(f"Bandes utilisées pour l'ACP : {bands_for_pca}")
 
         # --- Empilement en matrice (pixels x bandes) ---
-        stack = np.array([bands[i] for i in bands_for_acp])
+        stack = np.array([bands[i] for i in bands_for_pca])
         n_bands, rows, cols = stack.shape
         X = stack.reshape(n_bands, -1).T
 
