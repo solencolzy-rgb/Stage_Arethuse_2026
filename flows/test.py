@@ -345,7 +345,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         sample_indices = np.random.choice(X_valid.shape[0], size=n_samples, replace=False)
         pca = PCA()
         pca.fit(X_valid[sample_indices])
-        Logger.info(f"Variance contenue par les composantes principales : {pca.explained_variance_ratio_()}")
+        Logger.info(f"Variance contenue par les composantes principales : {pca.explained_variance_ratio_.round(6)}")
 
         X_pca = pca.transform(X_valid)                              # (n_valid_pixels, n_components)
 
