@@ -353,11 +353,12 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
 
         list_idx = [BAND_ACP[name] for name in acp_choice]
 
-        pc_images = []
+        pc_images = {}
+
         for pc_idx in list_idx:
             pc_img = np.full(rows * cols, np.nan, dtype=np.float32)
             pc_img[valid_mask] = X_pca[:, pc_idx - 1]
-            pc_images.append(pc_img.reshape(rows,cols))
+            pc_images[pc_idx] = pc_img.reshape(rows, cols)
         
         Logger.info(f"Nombre d'éléments dans pc_images : {len(pc_images)}")
         Logger.info(pc_images)
@@ -366,11 +367,19 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         rgb_pca = np.zeros((3, rows, cols), dtype=np.uint16)
 
         # --- Traduction de la demande de l'utilisateur en une liste de chiffres directement utilisables --- 
-        numeros_pc = [int(x) for x in re.findall(r"\d+", acp_combination)]  # traduction de la demande de l'utilisateur en une liste de chiffres directement utilisables
+        numeros_pc = [int(x) for x in re.findall(r"\d+", acp_combination)]  
         rgb_mapping = [num -1 for num in numeros_pc]
 
-        for pos_pc, pc_idx in enumerate(rgb_mapping):
-            pc_image = pc_images[pc_idx]
+        for pos_pc, pc_num in enumerate(rgb_mapping):
+
+            if pc_num not in pc_images:
+                    Logger.error(
+                    f"CP{pc_num} demandée mais non calculée. "
+                    f"ACP disponibles : {list(pc_images.keys())}"
+        )
+                    return
+
+            pc_image = pc_images[pc_num]
             vmin, vmax = np.nanpercentile(pc_image, 2), np.nanpercentile(pc_image, 98)
 
             if vmax - vmin == 0 : 
