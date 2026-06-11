@@ -215,7 +215,7 @@ def _load_bands(base_path, band_range=range(1, 8)):
 
     Logger.info(f"🔍 {len(all_files)} fichiers rasters détectés dans l'archive.")
 
-    # 2. Pour chaque numéro de bande requis, on cherche le fichier qui contient le tag "_Bi_" ou "_Bi."
+    ## 2. Pour chaque numéro de bande requis, on cherche le fichier qui contient le tag "_Bi_" ou "_Bi."
     #for i in band_range:
     #    file_path = None
     #    target_pattern_1 = f"_B{i}_"
