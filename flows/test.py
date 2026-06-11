@@ -112,6 +112,7 @@ def run():
             "Clay minerals 6|7",
         ],
         multiple=True,
+        optional=True,
     )
 
     chosen_complexes = dropdown(
@@ -129,6 +130,7 @@ def run():
             "Alteration Minerals (6-5)|(6+5)",
         ],
         multiple=True,
+        optional=True,
     )
 
     acp_choice = dropdown(
@@ -137,6 +139,7 @@ def run():
         label="Choisissez les composantes principales à visualiser (3 max)",
         options = ["CP1", "CP2", "CP3","CP4", "CP5", "CP6"],
         multiple=True,
+        optional=True,
     )       
 
     acp_combination = text_input(
@@ -212,19 +215,49 @@ def _load_bands(base_path, band_range=range(1, 8)):
     Logger.info(f"🔍 {len(all_files)} fichiers rasters détectés dans l'archive.")
 
     # 2. Pour chaque numéro de bande requis, on cherche le fichier qui contient le tag "_Bi_" ou "_Bi."
+    #for i in band_range:
+    #    file_path = None
+    #    target_pattern_1 = f"_B{i}_"
+    #    target_pattern_1_end = f"_B{i}." # Au cas où la bande finit le nom (ex: image_B1.tif)
+    #    target_pattern_point_1 = f".B{i}."
+    #    if i in [n for n in range(1, 10)]:
+    #        target_pattern_2 = f"_B0{i}."
+    #        target_pattern_2_end = f"_B0{i}_"
+    #        target_pattern_point_2 = f".B0{i}."
+#
+    #    for path in all_files:
+    #        filename = os.path.basename(path)
+    #        if target_pattern_1 in filename or target_pattern_1_end in filename or target_pattern_2 in filename or target_pattern_2_end or target_pattern_point_1 or target_pattern_point_2 in filename:
+    #            file_path = path
+    #            break
     for i in band_range:
+
         file_path = None
-        target_pattern_1 = f"_B{i}_"
-        target_pattern_1_end = f"_B{i}." # Au cas où la bande finit le nom (ex: image_B1.tif)
-        target_pattern_point_1 = f".B{i}."
-        if i in [n for n in range(1, 10)]:
-            target_pattern_2 = f"_B0{i}."
-            target_pattern_2_end = f"_B0{i}_"
-            target_pattern_point_2 = f".B0{i}."
+
+        # Formats supportés :
+        # image_B1.tif
+        # image_B01.tif
+        # image_B1_xxx.tif
+        # image_B01_xxx.tif
+        # HLS.xxx.B01.tif
+
+        patterns = [
+            f"_B{i}_",
+            f"_B{i}.",
+            f".B{i}.",
+        ]
+
+        if 1 <= i <= 9:
+            patterns.extend([
+                f"_B0{i}_",
+                f"_B0{i}.",
+                f".B0{i}.",
+            ])
 
         for path in all_files:
             filename = os.path.basename(path)
-            if target_pattern_1 in filename or target_pattern_1_end in filename or target_pattern_2 in filename or target_pattern_2_end or target_pattern_point_1 or target_pattern_point_2 in filename:
+
+            if any(pattern in filename for pattern in patterns):
                 file_path = path
                 break
 
