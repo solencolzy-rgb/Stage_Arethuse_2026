@@ -74,14 +74,14 @@ def run():
         key="Prefix",
         value="prefix",
         label="Prefixe des fichiers",
-        optional=False,
+        optional=True,
     )
 
     suffix = text_input(
         key="Suffix",
         value="suffix",
         label="Suffixe des fichiers",
-        optional=False,
+        optional=True,
     )
 
     chosen_combinations = dropdown(
