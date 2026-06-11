@@ -95,6 +95,7 @@ def run():
             "Geological structure bis (3-4-7)",
         ],
         multiple=True,
+        optional=True,
     )
 
     chosen_ratios = dropdown(
