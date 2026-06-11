@@ -73,13 +73,13 @@ def run():
     prefix = text_input(
         key="Prefix",
         value="prefix",
-        label="Prefixe des fichiers",
-        optional=True,
+        label="Préfixe des fichiers",
+        optional=False,
     )
 
     suffix = text_input(
         key="Suffix",
-        value="suffix",
+        value= None,
         label="Suffixe des fichiers",
         optional=True,
     )
