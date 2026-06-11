@@ -214,12 +214,17 @@ def _load_bands(base_path, band_range=range(1, 8)):
     # 2. Pour chaque numéro de bande requis, on cherche le fichier qui contient le tag "_Bi_" ou "_Bi."
     for i in band_range:
         file_path = None
-        target_pattern = f"_B{i}_"
-        target_pattern_end = f"_B{i}." # Au cas où la bande finit le nom (ex: image_B1.tif)
+        target_pattern_1 = f"_B{i}_"
+        target_pattern_1_end = f"_B{i}." # Au cas où la bande finit le nom (ex: image_B1.tif)
+        target_pattern_point_1 = f".B{i}."
+        if i in [n for n in range(1, 10)]:
+            target_pattern_2 = f"_B0{i}."
+            target_pattern_2_end = f"_B0{i}_"
+            target_pattern_point_2 = f".B0{i}."
 
         for path in all_files:
             filename = os.path.basename(path)
-            if target_pattern in filename or target_pattern_end in filename:
+            if target_pattern_1 in filename or target_pattern_1_end in filename or target_pattern_2 in filename or target_pattern_2_end or target_pattern_point_1 or target_pattern_point_2 in filename:
                 file_path = path
                 break
 
