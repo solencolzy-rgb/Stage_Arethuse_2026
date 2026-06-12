@@ -20,6 +20,7 @@ from sklearn.decomposition import PCA
 
 
 BAND_COMBINATIONS = {
+    "No processing" : None,
     "Natural Color (4-3-2)":            (4, 3, 2),
     "False Color (5-4-3)":              (5, 4, 3),
     "Geological structure (7-5-3)":     (7, 5, 3),
@@ -27,28 +28,31 @@ BAND_COMBINATIONS = {
 }
 
 BAND_RATIOS = {
+    "No processing" : None,
     "Ferric oxydes 4|2":              (4, 2),
-    "Clays, hydroxyles minerals 6|5": (6, 5),
-    "Clays, hydroxyles minerals 7|5": (7, 5),
+    "Clays and hydroxyl minerals 6|5": (6, 5),
+    "Clays and hydroxyl minerals 7|5": (7, 5),
     "Iron oxydes 4|3":                (4, 3),
-    "Silice 3|1":                     (3, 1),
+    "Silica 3|1":                     (3, 1),
     "Carbonates 6|3":                 (6, 3),
     "Green vegetation 5|4":           (5, 4),
     "Clay minerals 6|7":              (6, 7),
 }
 
 BAND_COMPLEXES = {
+    "No processing": None, 
     "Ferric Iron 4|2x(4+6)|5":             (2, 4, 6, 5, "np.where((bands[5] != 0) & (bands[2] != 0), (bands[4]/bands[2])*(bands[4]+bands[6])/bands[5], np.nan)"),
     "Ferrous Iron (3+6)|(4+5)":            (3, 6, 4, 5, "np.where((bands[4]+bands[5]) != 0, (bands[3]+bands[6])/(bands[4]+bands[5]), np.nan)"),
     "Iron Sulfate 2|1-5|4":                (2, 1, 5, 4, "np.where((bands[4] != 0) & (bands[1] != 0), (bands[2]/bands[1])-(bands[5]/bands[4]), np.nan)"),
-    "Clay Sulfate Mica Marble 6|7-5|4":    (6, 7, 5, 4, "np.where((bands[7] != 0) & (bands[4] != 0), (bands[6]/bands[7])-(bands[5]/bands[4]), np.nan)"),
+    "Clay, Sulfate, Mica and Marble 6|7-5|4":    (6, 7, 5, 4, "np.where((bands[7] != 0) & (bands[4] != 0), (bands[6]/bands[7])-(bands[5]/bands[4]), np.nan)"),
     "Hydrated Minerals (5-6)|(6+5)":       (5, 6, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[5]-bands[6])/(bands[6]+bands[5]), np.nan)"),
     "Clay Alteration Minerals (6-7)|(6+7)":(6, 7, 6, 7, "np.where((bands[6]+bands[7]) != 0, (bands[6]-bands[7])/(bands[6]+bands[7]), np.nan)"),
-    "Litho Discrimination (6-2)|(6+2)":    (6, 2, 6, 2, "np.where((bands[6]+bands[2]) != 0, (bands[6]-bands[2])/(bands[6]+bands[2]), np.nan)"),
+    "Lithogical Discrimination (6-2)|(6+2)":    (6, 2, 6, 2, "np.where((bands[6]+bands[2]) != 0, (bands[6]-bands[2])/(bands[6]+bands[2]), np.nan)"),
     "Alteration Minerals (6-5)|(6+5)":     (6, 5, 6, 5, "np.where((bands[6]+bands[5]) != 0, (bands[6]-bands[5])/(bands[6]+bands[5]), np.nan)"),
 }
 
 BAND_ACP = { 
+    "No processing" : None,
     "CP1": 1,
     "CP2": 2,
     "CP3": 3,
@@ -66,29 +70,30 @@ def run():
     zip_path = file_input(
         key="InputFolderZip",
         value="/path/to/landsat.zip",
-        label="Dossier bandes Landsat 8",
+        label="Landsat 8 Band Folder (.zip)",
         optional=False,
     )
 
     prefix = text_input(
         key="Prefix",
         value="prefix",
-        label="Préfixe des fichiers",
+        label="File Output Prefixes",
         optional=False,
     )
 
     suffix = text_input(
         key="Suffix",
         value= None,
-        label="Suffixe des fichiers",
+        label="File Output Suffixes",
         optional=True,
     )
 
     chosen_combinations = dropdown(
-        key="Combinaisons",
-        value=["Natural Color (4-3-2)"],
-        label="Choisissez les combinaisons de bandes",
+        key="Combinations",
+        value=["No processing"],
+        label="Processing 1 : Select Band Combinations",
         options=[
+            "No processing",
             "Natural Color (4-3-2)",
             "False Color (5-4-3)",
             "Geological structure (7-5-3)",
@@ -101,34 +106,35 @@ def run():
     chosen_ratios = dropdown(
         key="Ratios",
         value=["Ferric oxydes 4|2"],
-        label="Choisissez les indices de ratios",
+        label="Processing 2 : Select Band Ratios",
         options=[
-            "Ferric oxydes 4|2",
-            "Clays, hydroxyles minerals 6|5",
-            "Clays, hydroxyles minerals 7|5",
-            "Iron oxydes 4|3",
-            "Silice 3|1",
+            "No processing",
             "Carbonates 6|3",
-            "Green vegetation 5|4",
-            "Clay minerals 6|7",
+            "Clay Minerals 6|7",
+            "Clay and Hydroxyl Minerals 6|5",
+            "Clay and Hydroxyl Minerals 7|5",
+            "Ferric Oxides 4|2",
+            "Green Vegetation 5|4",
+            "Iron Oxides 4|3",
+            "Silica 3|1"
         ],
         multiple=True,
         optional=True,
     )
 
     chosen_complexes = dropdown(
-        key="Calculs algebriques",
+        key="Algebraic calculation",
         value=["Ferric Iron 4|2x(4+6)|5"],
-        label="Choisissez les calculs algebriques de bandes",
+        label="Processing 3 : Select Band Algebra Calculations",
         options=[
+            "Alteration Minerals (6-5)|(6+5)",
+            "Clay Alteration Minerals (6-7)|(6+7)",
+            "Clay, Sulfate, Mica and Marble 6|7-5|4",
             "Ferric Iron 4|2x(4+6)|5",
             "Ferrous Iron (3+6)|(4+5)",
-            "Iron Sulfate 2|1-5|4",
-            "Clay Sulfate Mica Marble 6|7-5|4",
             "Hydrated Minerals (5-6)|(6+5)",
-            "Clay Alteration Minerals (6-7)|(6+7)",
-            "Litho Discrimination (6-2)|(6+2)",
-            "Alteration Minerals (6-5)|(6+5)",
+            "Iron Sulfate 2|1-5|4",
+            "Lithological Discrimination (6-2)|(6+2)"
         ],
         multiple=True,
         optional=True,
@@ -136,9 +142,9 @@ def run():
 
     acp_choice = dropdown(
         key="PCA",
-        value = ["CP1", "CP2", "CP3"],
-        label="Choisissez les composantes principales à visualiser (3 max)",
-        options = ["CP1", "CP2", "CP3","CP4", "CP5", "CP6"],
+        value = ["No processing"],
+        label="Processing 4 : Choose the principal components to visualize (3 max)",
+        options = ["No processing","PC1", "PC2", "PC3","PC4", "PC5", "PC6"],
         multiple=True,
         optional=True,
     )       
@@ -146,7 +152,7 @@ def run():
     acp_combination = text_input(
         key = "RGB PCA combination",
         value = "R=CP3, G=CP1, B=CP2",
-        label = "Choisissez la combinaison RGB pour représenter les composantes principales",
+        label = "Choose the RGB combination",
         optional = False,
     )
 
@@ -305,7 +311,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 profile_rgb.update(count=3, dtype=rasterio.uint16, nodata=0)
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{suffix}_{name}.tif",
+                    value=f"{prefix}_{name}_{suffix}.tif",
                     label=f"Combinaison RGB {name}",
                     make_path=True,
                 )
@@ -328,7 +334,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 ratio = _normalize(ratio[np.newaxis, ...])[0]
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{suffix}_{name}.tif",
+                    value=f"{prefix}_{name}_{suffix}.tif",
                     label=f"Ratio {name}",
                     make_path=True,
                 )
@@ -351,7 +357,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 complexe = _normalize(complexe[np.newaxis, ...])[0]
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{suffix}_{name}.tif",
+                    value=f"{prefix}_{name}_{suffix}.tif",
                     label=f"Calcul algebrique {name}",
                     make_path=True,
                 )
@@ -428,7 +434,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         
         output_file = file_output(
             key=f"Output_ACP", 
-            value=f"{prefix}_{suffix}_ACP_CP{rgb_mapping[0]+1}CP{rgb_mapping[1]+1}CP{rgb_mapping[2]+1}.tif",
+            value=f"{prefix}_ACP_CP{rgb_mapping[0]+1}CP{rgb_mapping[1]+1}CP{rgb_mapping[2]+1}_{suffix}.tif",
             label=f"Composantes principales",
             make_path=True,
         )
