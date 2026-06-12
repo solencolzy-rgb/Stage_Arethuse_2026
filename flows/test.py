@@ -123,10 +123,11 @@ def run():
     )
 
     chosen_complexes = dropdown(
-        key="Algebraic calculation",
+        key="Calculations",
         value=["No processing"],
         label="Processing 3 : Select Band Algebra Calculations",
         options=[
+            "No processing",
             "Alteration Minerals (6-5)|(6+5)",
             "Clay Alteration Minerals (6-7)|(6+7)",
             "Clay, Sulfate, Mica and Marble 6|7-5|4",
@@ -143,7 +144,7 @@ def run():
     acp_choice = dropdown(
         key="PCA",
         value = ["No processing"],
-        label="Processing 4 : Choose the principal components to visualize (3 max)",
+        label="Processing 4 : Select the principal components to visualize (3 max)",
         options = ["No processing","PC1", "PC2", "PC3","PC4", "PC5", "PC6"],
         multiple=True,
         optional=True,
@@ -151,8 +152,8 @@ def run():
 
     acp_combination = text_input(
         key = "RGB PCA combination",
-        value = "R=CP3, G=CP1, B=CP2",
-        label = "Choose the RGB combination",
+        value = "R=PC3, G=PC1, B=PC2",
+        label = "Select the RGB combination",
         optional = False,
     )
 
@@ -434,7 +435,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         
         output_file = file_output(
             key=f"Output_ACP", 
-            value=f"{prefix}_ACP_CP{rgb_mapping[0]+1}CP{rgb_mapping[1]+1}CP{rgb_mapping[2]+1}_{suffix}.tif",
+            value=f"{prefix}_PCA_PC{rgb_mapping[0]+1}PC{rgb_mapping[1]+1}PC{rgb_mapping[2]+1}_{suffix}.tif",
             label=f"Composantes principales",
             make_path=True,
         )
