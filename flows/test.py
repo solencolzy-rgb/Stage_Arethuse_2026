@@ -334,7 +334,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 profile_rgb.update(count=3, dtype=rasterio.uint16, nodata=0)
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"{prefix}_{rewrite_filename(name)}.tif",
+                    value=f"RGB_combination/{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"RGB_combination/{prefix}_{rewrite_filename(name)}.tif",
                     label=f"Combinaison RGB {name}",
                     make_path=True,
                 )
@@ -357,7 +357,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 ratio = _normalize(ratio[np.newaxis, ...])[0]
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"{prefix}_{rewrite_filename(name)}.tif",
+                    value=f"Ratios/{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"Ratios/{prefix}_{rewrite_filename(name)}.tif",
                     label=f"Ratio {name}",
                     make_path=True,
                 )
@@ -380,7 +380,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 complexe = _normalize(complexe[np.newaxis, ...])[0]
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"{prefix}_{rewrite_filename(name)}.tif",
+                    value=f"Algebra_Calc/{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"Algebra_Calc/{prefix}_{rewrite_filename(name)}.tif",
                     label=f"Calcul algebrique {name}",
                     make_path=True,
                 )
