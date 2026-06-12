@@ -292,6 +292,28 @@ def _normalize(image):
     return normalized.astype(np.uint16)
 
 
+def rewrite_filename(name):
+    replacements = {
+        "|": "_div_",
+        "/": "_div_",
+        "+": "_add_",
+        "-": "_sub_",
+        "*": "_mul_",
+        "×": "_mul_",
+        "(": "_",
+        ")": "_",
+        ",": "_",
+        " ": "_"
+    }
+
+    for old, new in replacements.items():
+        name = name.replace(old, new)
+
+    name = re.sub(r'[^a-zA-Z0-9_]', '_', name)
+    name = re.sub(r'_+', '_', name)
+
+    return name.strip("_")
+
 def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios, liste_complexes, acp_choice, acp_combination):
     Logger.info("Processing image...")
 
@@ -312,7 +334,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 profile_rgb.update(count=3, dtype=rasterio.uint16, nodata=0)
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{name}_{suffix}.tif",
+                    value=f"{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"{prefix}_{rewrite_filename(name)}.tif",
                     label=f"Combinaison RGB {name}",
                     make_path=True,
                 )
@@ -335,7 +357,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 ratio = _normalize(ratio[np.newaxis, ...])[0]
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{name}_{suffix}.tif",
+                    value=f"{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"{prefix}_{rewrite_filename(name)}.tif",
                     label=f"Ratio {name}",
                     make_path=True,
                 )
@@ -358,7 +380,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 complexe = _normalize(complexe[np.newaxis, ...])[0]
                 output_file = file_output(
                     key=f"Output_{name}",
-                    value=f"{prefix}_{name}_{suffix}.tif",
+                    value=f"{prefix}_{rewrite_filename(name)}_{suffix}.tif" if suffix else f"{prefix}_{rewrite_filename(name)}.tif",
                     label=f"Calcul algebrique {name}",
                     make_path=True,
                 )
@@ -435,7 +457,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         
         output_file = file_output(
             key=f"Output_ACP", 
-            value=f"{prefix}_PCA_PC{rgb_mapping[0]+1}PC{rgb_mapping[1]+1}PC{rgb_mapping[2]+1}_{suffix}.tif",
+            value=f"{prefix}_PCA_PC{rgb_mapping[0]+1}PC{rgb_mapping[1]+1}PC{rgb_mapping[2]+1}_{suffix}.tif" if suffix else f"{prefix}_PCA_PC{rgb_mapping[0]+1}PC{rgb_mapping[1]+1}PC{rgb_mapping[2]+1}.tif",
             label=f"Composantes principales",
             make_path=True,
         )
