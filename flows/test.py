@@ -20,7 +20,7 @@ from sklearn.decomposition import PCA
 
 
 BAND_COMBINATIONS = {
-    "No processing" : None,
+    "No processing" : False,
     "Natural Color (4-3-2)":            (4, 3, 2),
     "False Color (5-4-3)":              (5, 4, 3),
     "Geological structure (7-5-3)":     (7, 5, 3),
@@ -28,7 +28,7 @@ BAND_COMBINATIONS = {
 }
 
 BAND_RATIOS = {
-    "No processing" : None,
+    "No processing" : False,
     "Ferric oxydes 4|2":              (4, 2),
     "Clays and hydroxyl minerals 6|5": (6, 5),
     "Clays and hydroxyl minerals 7|5": (7, 5),
@@ -40,7 +40,7 @@ BAND_RATIOS = {
 }
 
 BAND_COMPLEXES = {
-    "No processing": None, 
+    "No processing": False, 
     "Ferric Iron 4|2x(4+6)|5":             (2, 4, 6, 5, "np.where((bands[5] != 0) & (bands[2] != 0), (bands[4]/bands[2])*(bands[4]+bands[6])/bands[5], np.nan)"),
     "Ferrous Iron (3+6)|(4+5)":            (3, 6, 4, 5, "np.where((bands[4]+bands[5]) != 0, (bands[3]+bands[6])/(bands[4]+bands[5]), np.nan)"),
     "Iron Sulfate 2|1-5|4":                (2, 1, 5, 4, "np.where((bands[4] != 0) & (bands[1] != 0), (bands[2]/bands[1])-(bands[5]/bands[4]), np.nan)"),
@@ -52,7 +52,7 @@ BAND_COMPLEXES = {
 }
 
 BAND_ACP = { 
-    "No processing" : None,
+    "No processing" : False,
     "CP1": 1,
     "CP2": 2,
     "CP3": 3,
