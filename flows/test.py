@@ -53,12 +53,12 @@ BAND_COMPLEXES = {
 
 BAND_ACP = { 
     "No processing" : None,
-    "CP1": 1,
-    "CP2": 2,
-    "CP3": 3,
-    "CP4": 4,
-    "CP5": 5,
-    "CP6": 6,
+    "PC1": 1,
+    "PC2": 2,
+    "PC3": 3,
+    "PC4": 4,
+    "PC5": 5,
+    "PC6": 6,
 }
 
 
