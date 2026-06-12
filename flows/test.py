@@ -105,7 +105,7 @@ def run():
 
     chosen_ratios = dropdown(
         key="Ratios",
-        value=["Ferric oxydes 4|2"],
+        value=["No processing"],
         label="Processing 2 : Select Band Ratios",
         options=[
             "No processing",
@@ -124,7 +124,7 @@ def run():
 
     chosen_complexes = dropdown(
         key="Algebraic calculation",
-        value=["Ferric Iron 4|2x(4+6)|5"],
+        value=["No processing"],
         label="Processing 3 : Select Band Algebra Calculations",
         options=[
             "Alteration Minerals (6-5)|(6+5)",
