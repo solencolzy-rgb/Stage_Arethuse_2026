@@ -29,14 +29,14 @@ BAND_COMBINATIONS = {
 
 BAND_RATIOS = {
     "No processing" : None,
-    "Ferric oxydes 4|2":              (4, 2),
-    "Clays and hydroxyl minerals 6|5": (6, 5),
-    "Clays and hydroxyl minerals 7|5": (7, 5),
-    "Iron oxydes 4|3":                (4, 3),
+    "Ferric Oxydes 4|2":              (4, 2),
+    "Clays and Hydroxyl Minerals 6|5": (6, 5),
+    "Clays and Hydroxyl Minerals 7|5": (7, 5),
+    "Iron Oxydes 4|3":                (4, 3),
     "Silica 3|1":                     (3, 1),
     "Carbonates 6|3":                 (6, 3),
-    "Green vegetation 5|4":           (5, 4),
-    "Clay minerals 6|7":              (6, 7),
+    "Green Vegetation 5|4":           (5, 4),
+    "Clay Minerals 6|7":              (6, 7),
 }
 
 BAND_COMPLEXES = {
