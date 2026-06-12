@@ -30,8 +30,8 @@ BAND_COMBINATIONS = {
 BAND_RATIOS = {
     "No processing" : None,
     "Ferric Oxydes 4|2":              (4, 2),
-    "Clays and Hydroxyl Minerals 6|5": (6, 5),
-    "Clays and Hydroxyl Minerals 7|5": (7, 5),
+    "Clay and Hydroxyl Minerals 6|5": (6, 5),
+    "Clay and Hydroxyl Minerals 7|5": (7, 5),
     "Iron Oxydes 4|3":                (4, 3),
     "Silica 3|1":                     (3, 1),
     "Carbonates 6|3":                 (6, 3),
