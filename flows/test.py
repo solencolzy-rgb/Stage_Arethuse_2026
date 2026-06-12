@@ -20,7 +20,7 @@ from sklearn.decomposition import PCA
 
 
 BAND_COMBINATIONS = {
-    "No processing" : False,
+    "No processing" : None,
     "Natural Color (4-3-2)":            (4, 3, 2),
     "False Color (5-4-3)":              (5, 4, 3),
     "Geological structure (7-5-3)":     (7, 5, 3),
@@ -28,7 +28,7 @@ BAND_COMBINATIONS = {
 }
 
 BAND_RATIOS = {
-    "No processing" : False,
+    "No processing" : None,
     "Ferric oxydes 4|2":              (4, 2),
     "Clays and hydroxyl minerals 6|5": (6, 5),
     "Clays and hydroxyl minerals 7|5": (7, 5),
@@ -40,7 +40,7 @@ BAND_RATIOS = {
 }
 
 BAND_COMPLEXES = {
-    "No processing": False, 
+    "No processing": None, 
     "Ferric Iron 4|2x(4+6)|5":             (2, 4, 6, 5, "np.where((bands[5] != 0) & (bands[2] != 0), (bands[4]/bands[2])*(bands[4]+bands[6])/bands[5], np.nan)"),
     "Ferrous Iron (3+6)|(4+5)":            (3, 6, 4, 5, "np.where((bands[4]+bands[5]) != 0, (bands[3]+bands[6])/(bands[4]+bands[5]), np.nan)"),
     "Iron Sulfate 2|1-5|4":                (2, 1, 5, 4, "np.where((bands[4] != 0) & (bands[1] != 0), (bands[2]/bands[1])-(bands[5]/bands[4]), np.nan)"),
@@ -52,7 +52,7 @@ BAND_COMPLEXES = {
 }
 
 BAND_ACP = { 
-    "No processing" : False,
+    "No processing" : None,
     "CP1": 1,
     "CP2": 2,
     "CP3": 3,
@@ -302,7 +302,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
         return
 
     # --- Compositions RGB ---
-    if liste_combinaisons:
+    if not "No processing" in liste_combinaisons:
         for name in liste_combinaisons:
             r, g, b = BAND_COMBINATIONS[name]
             if r in bands and g in bands and b in bands:
@@ -323,7 +323,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 Logger.warning(f"❌ Bande manquante pour {name}")
 
     # --- Ratios de bandes ---
-    if liste_ratios:
+    if not "No processing" in liste_ratios:
         profile_ratio = profile.copy()
         profile_ratio.update(count=1, dtype=rasterio.float32, nodata=np.nan)
 
@@ -346,7 +346,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
                 Logger.warning(f"❌ Bande manquante pour le ratio {name}")
 
     # --- Calculs algébriques de bandes ---
-    if liste_complexes:
+    if not "No processing" in liste_complexes:
         profile_complexes = profile.copy()
         profile_complexes.update(count=1, dtype=rasterio.float32, nodata=np.nan)
 
@@ -370,7 +370,7 @@ def traitement_image(base_path, prefix, suffix, liste_combinaisons, liste_ratios
 
     # --- Calcul l'ACP des bandes ---
 
-    if acp_choice:
+    if not "No processing" in acp_choice:
 
         # --- On enlève la bande 1 de Landsat 8 (bruits atmosphériques) ---
       
